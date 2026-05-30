@@ -1,5 +1,0 @@
-com/example/eventapi/event/EventSpecificationBuilderTest.class
-com/example/eventapi/mapper/JsonMapperTest.class
-com/example/eventapi/mapper/DateMapperTest.class
-com/example/eventapi/factory/EventFactoryTest.class
-com/example/eventapi/service/EventServiceTest.class
