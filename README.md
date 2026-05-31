@@ -15,8 +15,6 @@ For the Python implementation, I focused on the following components:
 
 Rest was skipped.
 
----
-
 ### Database Changes
 
 To improve performance and simplify queries, the following changes were introduced:
@@ -25,24 +23,23 @@ To improve performance and simplify queries, the following changes were introduc
 * Added a new table: **`event_statistic_hourly`** for storing pre-aggregated statistics.
 * Add a new schema: **`event_processor`** and a table  **`event_processing_status`** for python part
 
----
 
-### Pagination
+## Read Api (Java)
+
+### Pagination 
 
 The maximum page size is limited to **100 records**. This provides a balance between usability and preventing excessively heavy database queries.
 
----
+## Statistics (Java)
 
-### Statistics Design Considerations
+### Design Considerations 
 
 The structure of the statistics API depends heavily on the use case. For example, in a **dashboard context**, it is preferable to:
 
 * Provide **separate endpoints for each metric**
 * Avoid blocking the entire dashboard by allowing data to load **widget by widget**
 
----
-
-### Data Sources
+### Data Sources 
 
 Two data sources are used for statistics:
 
@@ -51,15 +48,11 @@ Two data sources are used for statistics:
 
 If query performance becomes an issue, the real-time component can be removed. This would result in slightly stale data (up to 1 hour delay), but significantly improve performance.
 
----
-
 ### Performance & Monitoring
 
 Basic logging has been added to track database queries and identify potential bottlenecks.
 
----
-
-### Aggregation Strategy
+### Aggregation Strategy 
 
 Currently, the `event_statistic_hourly` table is updated **on each insert** into the `event` table.
 
@@ -69,9 +62,7 @@ In high-load scenarios, this approach may lead to performance degradation. As an
 
 This would reduce write pressure on the system and improve overall stability.
 
----
-
-### Control panel event status
+## Control panel event status (Python)
 
 The current implementation does not rely on Kafka offsets or MinIO metadata to track processing state.
 Instead, it uses a **database-driven state model**.
@@ -103,9 +94,7 @@ The relationship is explicitly stored via:
     - store `processed_at` timestamp
 7. Get currant status via /events/{id}/status
 
----
-
-### Replay
+## Replay (Python)
 
 For  `POST /events/{id}/replay` endpoint:
 
