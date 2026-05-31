@@ -18,6 +18,8 @@ pip install fastapi uvicorn confluent-kafka minio
 
 ## Start Api
 
+pip install -r requirements.txt
+pip install psycopg2-binary
 uvicorn app:app --reload --port 8000
 
 ---
