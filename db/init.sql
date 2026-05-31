@@ -151,3 +151,11 @@ FROM events
 GROUP BY date_trunc('hour', created_at), type
 ON CONFLICT (period_start, type)
 DO UPDATE SET count = EXCLUDED.count;
+
+CREATE SCHEMA event_processor;
+
+CREATE TABLE IF NOT EXISTS event_processor.event_processing_status (
+                                                                       event_id UUID PRIMARY KEY,
+                                                                       status TEXT NOT NULL,
+                                                                       processed_at TIMESTAMP
+);

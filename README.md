@@ -9,6 +9,12 @@ For the Java implementation, I focused on the following components:
 
 Authentication was skipped.
 
+For the Python implementation, I focused on the following components:
+
+* **Control panel: health & status**
+
+Rest was skipped.
+
 ---
 
 ### Database Changes
@@ -17,6 +23,7 @@ To improve performance and simplify queries, the following changes were introduc
 
 * Extracted the **event type** into a separate column to avoid JSON parsing during queries.
 * Added a new table: **`event_statistic_hourly`** for storing pre-aggregated statistics.
+* Add a new schema: **`event_processor`** and a table  **`event_processing_status`** for python part
 
 ---
 
@@ -61,4 +68,20 @@ In high-load scenarios, this approach may lead to performance degradation. As an
 * Switching to an **hourly scheduled job** that aggregates and updates statistics in batches
 
 This would reduce write pressure on the system and improve overall stability.
+
+---
+
+### Control panel event status flow
+
+1. Consume event from Kafka topic `events`
+2. Extract `event_id` from message
+3. Store initial status in PostgreSQL:
+    - `pending` before processing
+4. Transform JSON payload → XML
+5. Store XML file in MinIO bucket `events`
+    - filename format: `{event_id}.xml`
+6. Update event status to:
+    - `processed`
+    - store `processed_at` timestamp
+7. Get currant status via /events/{id}/status
 
