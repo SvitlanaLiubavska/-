@@ -11,19 +11,13 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "localhost:8080/events?type=type1",
+					"raw": "localhost:8080/events",
 					"host": [
 						"localhost"
 					],
 					"port": "8080",
 					"path": [
 						"events"
-					],
-					"query": [
-						{
-							"key": "type",
-							"value": "type1"
-						}
 					]
 				}
 			},
@@ -35,7 +29,15 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": ""
+					"raw": "localhost:8080/events/a4c12547-ca5a-4542-b1ff-d648062db414",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"events",
+						"a4c12547-ca5a-4542-b1ff-d648062db414"
+					]
 				}
 			},
 			"response": []
