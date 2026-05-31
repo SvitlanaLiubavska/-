@@ -71,7 +71,25 @@ This would reduce write pressure on the system and improve overall stability.
 
 ---
 
-### Control panel event status flow
+### Control panel event status
+
+The current implementation does not rely on Kafka offsets or MinIO metadata to track processing state.
+Instead, it uses a **database-driven state model**.
+
+This design was chosen because:
+
+- Kafka offsets only guarantee consumption order, not business-level processing state
+- MinIO does not provide a queryable index for event metadata by default
+- A relational store provides reliable lookup for:
+   - event status (`pending`, `processed`)
+   - processing timestamp
+
+The relationship is explicitly stored via:
+
+- `event_id` → used as the **primary key**
+- MinIO object key → derived deterministically from event_id
+
+**Currant flow**
 
 1. Consume event from Kafka topic `events`
 2. Extract `event_id` from message
@@ -84,4 +102,19 @@ This would reduce write pressure on the system and improve overall stability.
     - `processed`
     - store `processed_at` timestamp
 7. Get currant status via /events/{id}/status
+
+---
+
+### Replay
+
+For  `POST /events/{id}/replay` endpoint:
+
+- Event payload will be retrieved from `event-api`
+  - this keeps Python and Java storage concerns separated
+  - python service does not duplicate event storage logic
+  - java service remains the single source of truth for event payloads
+- Before processing, the system checks `event_processing_status`
+- If event is already marked as `processed`, replay logic will:
+   - avoid duplicate MinIO writes
+   - either skip or explicitly overwrite based on design choice
 
