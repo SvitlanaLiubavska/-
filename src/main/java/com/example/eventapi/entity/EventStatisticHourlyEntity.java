@@ -12,12 +12,11 @@ import lombok.Setter;
 @Entity
 @Table(name = "event_statistic_hourly")
 @Getter
-@NoArgsConstructor
 @Setter
-@IdClass(EventStatisticHourlyId.class)
+@NoArgsConstructor
 public class EventStatisticHourlyEntity {
-	@EmbeddedId
-	private EventStatisticHourlyId id;
-	@Column(nullable = false)
-	private long count;
+    @EmbeddedId
+    private EventStatisticHourlyId id;
+    @Column(nullable = false)
+    private long count;
 }

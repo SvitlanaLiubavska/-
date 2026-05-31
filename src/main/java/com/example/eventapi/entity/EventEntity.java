@@ -1,9 +1,6 @@
 package com.example.eventapi.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -25,7 +22,6 @@ public class EventEntity {
 	@Column(columnDefinition = "TEXT", nullable = false)
 	private String payload;
 
-	// I prefer to extract type into a separate column to avoid JSON extraction in queries and improve performance
 	@Column(nullable = false, length = 100)
 	private String type;
 

@@ -1,6 +1,6 @@
 package com.example.eventapi.entity;
 
 public interface EventTypeCountProjection {
-	String getType();
-	long getCount();
+	String getEventType();
+	long getEventCount();
 }

@@ -27,36 +27,36 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @RequestMapping("/events")
 public class EventController {
-	private static final int MAX_PAGE_SIZE = 100;
-	private static final int DEFAULT_PAGE_SIZE = 20;
-	private final EventService eventService;
+    private static final int MAX_PAGE_SIZE = 100;
+    private static final int DEFAULT_PAGE_SIZE = 20;
+    private final EventService eventService;
 
-	@PostMapping
-	public ResponseEntity<Map<String, Object>> create(@RequestBody Map<String, Object> body) throws JsonProcessingException {
-		UUID id = eventService.create(body);
+    @PostMapping
+    public ResponseEntity<Map<String, Object>> create(@RequestBody Map<String, Object> body) throws JsonProcessingException {
+        UUID id = eventService.create(body);
 
-		Map<String, Object> response = new LinkedHashMap<>();
-		response.put("id", id.toString());
-		response.put("status", "accepted");
-		return ResponseEntity.ok(response);
-	}
+        Map<String, Object> response = new LinkedHashMap<>();
+        response.put("id", id.toString());
+        response.put("status", "accepted");
+        return ResponseEntity.ok(response);
+    }
 
-	@GetMapping("/{id}")
-	public ResponseEntity<Event> findById(@PathVariable UUID id) {
-		return eventService.findById(id)
-				.map(eventEntity -> ResponseEntity.ok().body(eventEntity))
-				.orElse(ResponseEntity.notFound().build());
-	}
+    @GetMapping("/{id}")
+    public ResponseEntity<Event> findById(@PathVariable UUID id) {
+        return eventService.findById(id)
+                .map(eventEntity -> ResponseEntity.ok().body(eventEntity))
+                .orElse(ResponseEntity.notFound().build());
+    }
 
-	//Max page size is 100 to balance usability and avoid to heavy db calls
-	@GetMapping
-	public ResponseEntity<List<Event>> findAll(@RequestParam String type, @RequestParam String from, @RequestParam String to,
-			@PageableDefault(size = DEFAULT_PAGE_SIZE) Pageable pageable) {
-		if(pageable.getPageSize() <= MAX_PAGE_SIZE) {
-			throw new IllegalArgumentException("Max page size is " + MAX_PAGE_SIZE);
-		}
-		return ResponseEntity.ok(eventService.findAll(new EventFilter(type, from, to, pageable)));
-	}
+    @GetMapping
+    public ResponseEntity<List<Event>> findAll(@RequestParam(required = false) String type, @RequestParam(required = false) String from,
+                                               @RequestParam(required = false) String to,
+                                               @PageableDefault(size = DEFAULT_PAGE_SIZE) Pageable pageable) {
+        if (pageable.getPageSize() > MAX_PAGE_SIZE) {
+            throw new IllegalArgumentException("Max page size is " + MAX_PAGE_SIZE);
+        }
+        return ResponseEntity.ok(eventService.findAll(new EventFilter(type, from, to, pageable)));
+    }
 
 
 }

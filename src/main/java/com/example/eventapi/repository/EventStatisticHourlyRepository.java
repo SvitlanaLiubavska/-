@@ -31,7 +31,7 @@ public interface EventStatisticHourlyRepository extends JpaRepository<EventStati
 	long getTotalEventCount();
 
 	@Query("""
-					SELECT e.id.type, SUM(e.count) FROM EventStatisticHourlyEntity e GROUP BY e.id.type
+					SELECT e.id.type as eventType, SUM(e.count) as eventCount FROM EventStatisticHourlyEntity e GROUP BY e.id.type
 			""")
 	List<EventTypeCountProjection> getTotalEventCountByType();
 
@@ -41,7 +41,7 @@ public interface EventStatisticHourlyRepository extends JpaRepository<EventStati
 	long getEventCountBetween(Instant from, Instant to);
 
 	@Query("""
-        SELECT e.id.type as type, SUM(e.count) as count FROM EventStatisticHourlyEntity e
+        SELECT e.id.type as eventType, SUM(e.count) as eventCount FROM EventStatisticHourlyEntity e
         WHERE e.id.periodStart >= :from AND e.id.periodStart < :to GROUP BY e.id.type
     """)
 	List<EventTypeCountProjection> getEventCountByTypeBetween(Instant from, Instant to);
