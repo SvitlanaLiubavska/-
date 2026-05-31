@@ -1,3 +1,0 @@
-confluent-kafka==2.14.0
-minio==7.2.7
-xmltodict==0.13.0
