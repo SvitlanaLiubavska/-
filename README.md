@@ -1,20 +1,64 @@
-For java part I took
-    Read Api
-    Statistic
-Skipped auth
+## Implementation Overview
 
-DB changes:
-    extract type into a separate column to avoid JSON extraction in queries and improve performance
-    add event_statistic_hourly for preaggregated statistic
+### Scope
 
-Max page size is 100 to balance usability and avoid to heavy db calls.
+For the Java implementation, I focused on the following components:
 
-For statistic context is matter, if for example this statistic is for dashboard then it's better to make separate endpoints 
-for each metric.
-in order not to block the whole dashboard, but to display it widget per widget.
-I am using 2 sources of data event_statistic_hourly for statistic group by type and hour and real data from event table 
-for the last period. If requests take too much time event part may be removed in this case data won't be real time consistent (up to 1 hour),
-but it will improve the performance. 
-At the same time there some logs to track db requests and find bottleneck to make a decision.
-For now event_statistic_hourly updates every time when we add record to events table, in case of to many events it may also 
-cause issues, then I suggest to make an hourly scheduler to set data to event_statistic_hourly. 
+* **Read API**
+* **Statistics**
+
+Authentication was skipped.
+
+---
+
+### Database Changes
+
+To improve performance and simplify queries, the following changes were introduced:
+
+* Extracted the **event type** into a separate column to avoid JSON parsing during queries.
+* Added a new table: **`event_statistic_hourly`** for storing pre-aggregated statistics.
+
+---
+
+### Pagination
+
+The maximum page size is limited to **100 records**. This provides a balance between usability and preventing excessively heavy database queries.
+
+---
+
+### Statistics Design Considerations
+
+The structure of the statistics API depends heavily on the use case. For example, in a **dashboard context**, it is preferable to:
+
+* Provide **separate endpoints for each metric**
+* Avoid blocking the entire dashboard by allowing data to load **widget by widget**
+
+---
+
+### Data Sources
+
+Two data sources are used for statistics:
+
+1. **`event_statistic_hourly`** – for aggregated data (grouped by type and hour)
+2. **`event` table** – for real-time data covering the most recent period
+
+If query performance becomes an issue, the real-time component can be removed. This would result in slightly stale data (up to 1 hour delay), but significantly improve performance.
+
+---
+
+### Performance & Monitoring
+
+Basic logging has been added to track database queries and identify potential bottlenecks.
+
+---
+
+### Aggregation Strategy
+
+Currently, the `event_statistic_hourly` table is updated **on each insert** into the `event` table.
+
+In high-load scenarios, this approach may lead to performance degradation. As an alternative, I suggest:
+
+* Switching to an **hourly scheduled job** that aggregates and updates statistics in batches
+
+This would reduce write pressure on the system and improve overall stability.
+
