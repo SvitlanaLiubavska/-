@@ -19,9 +19,10 @@ Rest was skipped.
 
 To improve performance and simplify queries, the following changes were introduced:
 
-* Extracted the **event type** into a separate column to avoid JSON parsing during queries.
-* Added a new table: **`event_statistic_hourly`** for storing pre-aggregated statistics.
-* Add a new schema: **`event_processor`** and a table  **`event_processing_status`** for python part
+- Extracted **event type** into a separate column to avoid JSON parsing during queries.
+- Added a pre-aggregated table: `event_statistic_hourly` for statistics.
+- Introduced schema: `event_processor` for Python-side state management.
+- Added table: `event_processing_status` to track event processing state.
 
 
 ## Read Api (Java)
@@ -44,9 +45,11 @@ The structure of the statistics API depends heavily on the use case. For example
 Two data sources are used for statistics:
 
 1. **`event_statistic_hourly`** – for aggregated data (grouped by type and hour)
-2. **`event` table** – for real-time data covering the most recent period
+2. **`event` table** – for real-time data covering the most recent period 
 
-If query performance becomes an issue, the real-time component can be removed. This would result in slightly stale data (up to 1 hour delay), but significantly improve performance.
+If performance becomes critical, real-time queries can be removed, resulting in:
+- Slightly stale data (up to 1 hour)
+- Significant performance improvement
 
 ### Performance & Monitoring
 
