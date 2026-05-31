@@ -18,10 +18,10 @@ public interface EventStatisticHourlyRepository extends JpaRepository<EventStati
 	@Modifying
 	@Transactional
 	@Query(value = """
-			    INSERT INTO event_stats_hourly(period_start, type, count)
+			    INSERT INTO event_statistic_hourly(period_start, type, count)
 			    VALUES (:periodStart, :type, 1)
 			    ON CONFLICT (period_start, type)
-			    DO UPDATE SET count = event_stats_hourly.count + 1
+			    DO UPDATE SET count = event_statistic_hourly.count + 1
 			""", nativeQuery = true)
 	void increment(Instant periodStart, String type);
 
